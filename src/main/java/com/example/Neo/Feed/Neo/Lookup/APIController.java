@@ -63,17 +63,22 @@ public class APIController {
         datesInRange.add(strenddate);
         
 
-        final String uri = "https://api.nasa.gov/neo/rest/v1/feed?start_date="+strstartdate+"&end_date="+strstartdate+"&api_key="+ myApiKey;
+        final String uri = "https://api.nasa.gov/neo/rest/v1/feed?start_date="+strstartdate+"&end_date="+strenddate+"&api_key="+ myApiKey;
         
 
         RestTemplate restTemplate = new RestTemplate();
         
         ObjectMapper mapper = new ObjectMapper();
+        CloseApproachDatum closeApproachDatummm;
+        near_earth_objects near_earth_objectsss = new near_earth_objects();
+        near_earth_objectsss.close_approach_data = new ArrayList<CloseApproachDatum>();
         ArrayList<near_earth_objects>listmaster_near_earth_objectss = new ArrayList<near_earth_objects>();
         // ArrayList<master_near_earth_objects>listmaster_near_earth_objectsstartendtemp;
-        Feed map = new Feed();
-        CloseApproachDatum closeApproachDatumstart = new CloseApproachDatum();
+        Feed mapped = new Feed(){};
         ArrayList<CloseApproachDatum> close_approach_datas = new ArrayList<CloseApproachDatum>();
+        mapped.near_earth_objects  = listmaster_near_earth_objectss;
+        // mapped.near_earth_objects.
+        
         //near_earth_objects inner_near_earth_objectss = new near_earth_objects();
         master_near_earth_objects master_near_earth_objectsstartdate = new master_near_earth_objects();
         try{
@@ -84,66 +89,37 @@ public class APIController {
 
             for(int i = 0; i<datesInRange.size(); i++)
             {
-                JsonNode newjsnonode= node.get("near_earth_objects").get(datesInRange.get(i));
+                JsonNode newjsnonode= node.get("near_earth_objects");
                 ObjectMapper JSONDdemapperer = new ObjectMapper();
-                for(int j = 0; j<newjsnonode.size(); i++)
-                    {
+
+                ObjectMapper JSONDdemappererchild = new ObjectMapper();
+                JsonNode again = newjsnonode.get(datesInRange.get(i));
+                
                         
-                        ObjectMapper JSONDdemappererchild = new ObjectMapper();
-                        JsonNode again = newjsnonode.get(j);
-                        JsonNode closeapproachnode =  again.get("close_approach_data");
+                for(int j = 0; j<again.size(); j++ )
+                {
+                    JsonNode closeapproachdatanode =  again.get(j).get("close_approach_data");
+                     for(int k = 0; k<closeapproachdatanode.size(); k++ ){
+                            JsonNode closeapproachdatum = closeapproachdatanode.get(k);
+                            CloseApproachDatum closeApproachDatumm = JSONnodemapper.treeToValue(closeapproachdatum, CloseApproachDatum.class);
+                            
+                            near_earth_objectsss.close_approach_data.add(closeApproachDatumm);
+                            System.out.println();
+
+
                         
-                        for(int k = 0; k<closeapproachnode.size(); k++ )
-                        {
-                            CloseApproachDatum closeApproachDatum = JSONDdemappererchild.treeToValue(closeapproachnode.get(k), CloseApproachDatum.class);
-                            close_approach_datas.add(closeApproachDatum);
-                        }
-                        near_earth_objects inner_near_earth_objectss = JSONDdemapperer.treeToValue(again, near_earth_objects.class);
-                        listmaster_near_earth_objectss.add(inner_near_earth_objectss);
-                        
-                    }
+
+                     }
+
+                }
+ 
                     
                     System.out.println();
 
             }
-            map.element_count = node.path("element_count").path(JsonRes).asInt();
-            map.near_earth_objects = listmaster_near_earth_objectss;
-            //map.links
 
-            
-            
-            
-            //JsonNode newjsnonodeenddate = node.get("near_earth_objects").get(enddate);
+            mapped.near_earth_objects = listmaster_near_earth_objectss;
 
-
-            
-            //master_near_earth_objects mObjects  =JSONnodemapper.treeToValue(newjsnonodestartdate, master_near_earth_objects.class);
-            //listmaster_near_earth_objectsstartstarttemp =JSONnodemapper.convertValue(node.path("element_count").path("JsonRes"), listmaster_near_earth_objectsstartstarttemp);
-            //String test = node.path("master_near_earth_objects").toString();   
-            // map.near_earth_objects= new list_master_near_earth_objects(){
-            //     listmaster_near_earth_objectsstartstart = new ArrayList<master_near_earth_objects>();
-            // };
-            //map.near_earth_objects.listmaster_near_earth_objectsstartend = JSONnodemapper.treeToValue( node.path(startdate),  map.near_earth_objects.listmaster_near_earth_objectsstartend );
-            //map.near_earth_objects.listmaster_near_earth_objectsstartend = node.path(startdate).
-
-
-
-            // for(map.near_earth_objects.listmaster_near_earth_objectsstartend:){
-
-            // }
-
-            // for(JsonNode jsonnodea : node.path("near_earth_objects")){
-            //     map.near_earth_objects = new list_master_near_earth_objects{};
-            // }
-            //map.near_earth_objects = JSONnodemapper.convertValue(node.path("near_earth_objects"), map.near_earth_objects) .
-            //map.links = node.path("links").
-            // String street = rootNode.path("address").path("street").asText();
-            // String city = rootNode.path("address").path("city").asText();
-            //assertThat(product.getDetails().get("audioConnector").asText()).isEqualTo("none");
-            // for (Int i = 0; i<map.near_earth_objects.; i++) {
-                
-            // }
-            //Feed map = mapper.readValue(result, Feed.class);
             System.out.println();
         }
         catch(Exception e)
@@ -159,11 +135,7 @@ public class APIController {
     private static Calendar getCalendarWithoutTime(Date date) {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
-        // calendar.set(Calendar.HOUR, 0);
-        // calendar.set(Calendar.HOUR_OF_DAY, 0);
-        // calendar.set(Calendar.MINUTE, 0);
-        // calendar.set(Calendar.SECOND, 0);
-        // calendar.set(Calendar.MILLISECOND, 0);
+
         return calendar;
     }
 
