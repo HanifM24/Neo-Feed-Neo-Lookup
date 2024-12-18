@@ -1,9 +1,15 @@
-$.ajax({
-  url: "/api/feed",
-  data: {
-    zipcode: 97201
-  },
-  success: function( result ) {
-    $( "#weather-temp" ).html( "<strong>" + result + "</strong> degrees" );
-  }
-});
+
+function SubmitForm(){
+  var startdate = document.getElementById("start").value;
+  var enddate = document.getElementById("end").value;
+  $.ajax({
+    url: "/api/feed",
+    data: {
+      fromdate: startdate,
+      enddate: enddate
+    },
+    success: function( result ) {
+      $( "#result" ).html( result );
+    }
+  });
+}
